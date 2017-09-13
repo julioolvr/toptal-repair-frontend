@@ -1,9 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders a row for a repair 1`] = `
-<div
-  className="RepairRow"
+<glamorous.Div
+  borderBottom="1px solid rgba(0, 0, 0, .1)"
+  padding=".8em"
 >
   Test repair
-</div>
+</glamorous.Div>
 `;

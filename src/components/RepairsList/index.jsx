@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './styles.css';
+import g from 'glamorous';
 
 import RepairRow from './RepairRow';
 import EmptyRepairsList from './EmptyRepairsList';
@@ -14,7 +14,7 @@ function RepairsList({ repairs = [] }) {
     content = repairs.map(repair => <RepairRow key={repair.id} repair={repair} />);
   }
 
-  return <div className="RepairsList">{content}</div>;
+  return <g.Div height="100%" backgroundColor="rgba(255,255,255,.7)">{content}</g.Div>;
 }
 
 RepairsList.propTypes = {

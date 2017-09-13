@@ -1,10 +1,12 @@
 import React from 'react';
+import g from 'glamorous';
 
-import './styles.css';
 import repairPropType from '../../../proptypes/repair';
 
 function RepairRow({ repair }) {
-  return <div className="RepairRow">{repair.title}</div>;
+  return (<g.Div padding=".8em" borderBottom="1px solid rgba(0, 0, 0, .1)">
+    {repair.title}
+  </g.Div>);
 }
 
 RepairRow.propTypes = {

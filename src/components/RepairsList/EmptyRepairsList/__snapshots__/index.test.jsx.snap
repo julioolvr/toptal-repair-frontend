@@ -1,16 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders a message saying that the list is empty 1`] = `
-<div
-  className="EmptyRepairsList"
+<glamorous.Div
+  alignItems="center"
+  display="flex"
+  flexDirection="column"
+  fontSize="1.8em"
+  height="100%"
+  justifyContent="center"
 >
   <div>
     No repairs
   </div>
-  <button
-    className="EmptyRepairsList__button"
+  <glamorous.Button
+    backgroundColor="#0077dd"
+    border="none"
+    color="#222"
+    cursor="pointer"
+    fontSize="1.2em"
+    marginTop=".5em"
+    padding=".5em 1em"
   >
     +
-  </button>
-</div>
+  </glamorous.Button>
+</glamorous.Div>
 `;

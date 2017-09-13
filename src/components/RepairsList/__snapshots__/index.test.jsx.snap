@@ -1,8 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders a list of repairs with content 1`] = `
-<div
-  className="RepairsList"
+<glamorous.Div
+  backgroundColor="rgba(255,255,255,.7)"
+  height="100%"
 >
   <RepairRow
     repair={
@@ -20,13 +21,14 @@ exports[`renders a list of repairs with content 1`] = `
       }
     }
   />
-</div>
+</glamorous.Div>
 `;
 
 exports[`renders an empty list of repairs 1`] = `
-<div
-  className="RepairsList"
+<glamorous.Div
+  backgroundColor="rgba(255,255,255,.7)"
+  height="100%"
 >
   <EmptyRepairsList />
-</div>
+</glamorous.Div>
 `;

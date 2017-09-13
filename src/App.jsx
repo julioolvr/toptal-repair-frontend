@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import g from 'glamorous';
 
 import RepairsList from './components/RepairsList';
 
@@ -11,9 +11,15 @@ function App() {
   ];
 
   return (
-    <div className="App">
+    <g.Div
+      height="100vh"
+      padding="3em"
+      boxSizing="border-box"
+      backgroundColor="#99ddff"
+      color="#333"
+    >
       <RepairsList repairs={fakeRepairs} />
-    </div>
+    </g.Div>
   );
 }
 
