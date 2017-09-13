@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders a list of repairs with content 1`] = `
+<div
+  className="RepairsList"
+>
+  <RepairRow
+    repair={
+      Object {
+        "id": 1,
+        "title": "Test repair 1",
+      }
+    }
+  />
+  <RepairRow
+    repair={
+      Object {
+        "id": 1,
+        "title": "Test repair 1",
+      }
+    }
+  />
+</div>
+`;
+
+exports[`renders an empty list of repairs 1`] = `
+<div
+  className="RepairsList"
+>
+  <EmptyRepairsList />
+</div>
+`;

@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders a row for a repair 1`] = `
+<div
+  className="RepairRow"
+>
+  Test repair
+</div>
+`;
