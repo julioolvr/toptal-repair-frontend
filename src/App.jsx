@@ -1,23 +1,16 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import g from 'glamorous';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 
-import reducers from './reducer';
 import LoginBox from './components/LoginBox';
-// import RepairsList from './components/RepairsList';
+import RepairsList from './components/RepairsList';
 
-const fakeRepairs = {
-  1: { id: 1, title: 'First repair' },
-  2: { id: 2, title: 'Second repair' },
-  3: { id: 3, title: 'Third repair' },
-};
-
-const store = createStore(reducers, { repairs: fakeRepairs });
-
-function App() {
+// TODO: Generic component for routes that require authentication
+function App({ isUserAuthenticated }) {
   return (
-    <Provider store={store}>
+    <Router>
       <g.Div
         height="100vh"
         padding="3em"
@@ -25,14 +18,36 @@ function App() {
         backgroundColor="#99ddff"
         color="#333"
       >
-        <LoginBox
-          onLogin={(username, password) =>
-            console.log('Tried to login with', username, password)}
+        <Route
+          path="/"
+          render={() =>
+            (isUserAuthenticated ? (
+              <Redirect to="/repairs" />
+            ) : (
+              <Redirect to="/login" />
+            ))}
         />
-        {/* <RepairsList repairs={fakeRepairs} /> */}
+        <Route path="/login" component={LoginBox} />
+
+        <Route
+          path="/repairs"
+          render={() =>
+            (isUserAuthenticated ? <RepairsList /> : <Redirect to="/login" />)}
+        />
       </g.Div>
-    </Provider>
+    </Router>
   );
 }
 
-export default App;
+App.propTypes = {
+  isUserAuthenticated: PropTypes.bool.isRequired,
+};
+
+function mapStateToProps(state) {
+  return {
+    isUserAuthenticated: state.auth.isAuthenticated,
+  };
+}
+
+export { App };
+export default connect(mapStateToProps)(App);
