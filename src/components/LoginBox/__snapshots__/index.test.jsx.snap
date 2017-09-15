@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders an empty login box 1`] = `
+<form
+  onSubmit={[Function]}
+>
+  <div>
+    Login
+  </div>
+  <label
+    htmlFor="username"
+  >
+    Username:
+  </label>
+  <input
+    id="username"
+    onChange={[Function]}
+    value=""
+  />
+  <label
+    htmlFor="password"
+  >
+    Password:
+  </label>
+  <input
+    id="password"
+    onChange={[Function]}
+    type="password"
+    value=""
+  />
+  <button>
+    Sign in
+  </button>
+</form>
+`;

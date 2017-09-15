@@ -3,8 +3,9 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import g from 'glamorous';
 
-import reducers from './reducers';
-import RepairsList from './components/RepairsList';
+import reducers from './reducer';
+import LoginBox from './components/LoginBox';
+// import RepairsList from './components/RepairsList';
 
 const fakeRepairs = {
   1: { id: 1, title: 'First repair' },
@@ -24,7 +25,11 @@ function App() {
         backgroundColor="#99ddff"
         color="#333"
       >
-        <RepairsList repairs={fakeRepairs} />
+        <LoginBox
+          onLogin={(username, password) =>
+            console.log('Tried to login with', username, password)}
+        />
+        {/* <RepairsList repairs={fakeRepairs} /> */}
       </g.Div>
     </Provider>
   );
