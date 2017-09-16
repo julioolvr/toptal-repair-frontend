@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders a layout with a user 1`] = `
+<glamorous.Div
+  backgroundColor="#99ddff"
+  boxSizing="border-box"
+  color="#333"
+  height="100vh"
+  padding="3em"
+>
+  <Connect(UserNavbar) />
+  <div>
+    Content
+  </div>
+</glamorous.Div>
+`;
+
+exports[`renders a layout without a user 1`] = `
+<glamorous.Div
+  backgroundColor="#99ddff"
+  boxSizing="border-box"
+  color="#333"
+  height="100vh"
+  padding="3em"
+>
+  <div>
+    Content
+  </div>
+</glamorous.Div>
+`;
