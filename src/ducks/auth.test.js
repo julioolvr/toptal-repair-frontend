@@ -253,5 +253,27 @@ describe('ducks/auth', () => {
         expect(state.isAuthenticated).toBe(false);
       });
     });
+
+    describe('on LOGOUT_START', () => {
+      it('sets the user to null', () => {
+        const state = reducer({ user: {} }, { type: 'LOGOUT_START' });
+        expect(state.user).toBe(null);
+      });
+
+      it('sets isAuthenticated to false', () => {
+        const state = reducer({ isAuthenticated: true }, { type: 'LOGOUT_START' });
+        expect(state.isAuthenticated).toBe(false);
+      });
+
+      it('sets isFetching to false', () => {
+        const state = reducer({ isFetching: true }, { type: 'LOGOUT_START' });
+        expect(state.isFetching).toBe(false);
+      });
+
+      it('sets the error to null', () => {
+        const state = reducer({ error: new Error() }, { type: 'LOGOUT_START' });
+        expect(state.error).toBe(null);
+      });
+    });
   });
 });
