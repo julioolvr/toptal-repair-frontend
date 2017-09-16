@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders a message saying that the list is empty 1`] = `
+exports[`renders a message prompting the manager to add a repair 1`] = `
 <glamorous.Div
   alignItems="center"
   display="flex"
@@ -10,18 +10,35 @@ exports[`renders a message saying that the list is empty 1`] = `
   justifyContent="center"
 >
   <div>
-    No repairs
+    <div>
+      No repairs
+    </div>
+    <glamorous.Button
+      backgroundColor="#0077dd"
+      border="none"
+      color="#222"
+      cursor="pointer"
+      fontSize="1.2em"
+      marginTop=".5em"
+      padding=".5em 1em"
+    >
+      +
+    </glamorous.Button>
   </div>
-  <glamorous.Button
-    backgroundColor="#0077dd"
-    border="none"
-    color="#222"
-    cursor="pointer"
-    fontSize="1.2em"
-    marginTop=".5em"
-    padding=".5em 1em"
-  >
-    +
-  </glamorous.Button>
+</glamorous.Div>
+`;
+
+exports[`renders a message telling the regular user that no repairs are assigned to them 1`] = `
+<glamorous.Div
+  alignItems="center"
+  display="flex"
+  flexDirection="column"
+  fontSize="1.8em"
+  height="100%"
+  justifyContent="center"
+>
+  <div>
+    You have no repairs assigned
+  </div>
 </glamorous.Div>
 `;

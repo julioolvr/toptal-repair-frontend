@@ -29,6 +29,8 @@ exports[`renders an empty list of repairs 1`] = `
   backgroundColor="rgba(255,255,255,.7)"
   height="100%"
 >
-  <EmptyRepairsList />
+  <EmptyRepairsList
+    canAddRepairs={true}
+  />
 </glamorous.Div>
 `;
