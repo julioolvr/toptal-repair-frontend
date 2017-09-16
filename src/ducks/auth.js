@@ -33,6 +33,7 @@ export function epic(action$) {
   return action$.ofType(LOGIN_START).mergeMap(action =>
     api
       .login(action.payload.email, action.payload.password)
+      .mergeMap(response => response.json())
       .map(loginSuccessful)
       .catch(err => Observable.of(loginFailed(err))),
   );

@@ -19,6 +19,7 @@ function App({ isUserAuthenticated }) {
         color="#333"
       >
         <Route
+          exact
           path="/"
           render={() =>
             (isUserAuthenticated ? (
@@ -27,7 +28,12 @@ function App({ isUserAuthenticated }) {
               <Redirect to="/login" />
             ))}
         />
-        <Route path="/login" component={LoginBox} />
+
+        <Route
+          path="/login"
+          render={() =>
+            (isUserAuthenticated ? <Redirect to="/" /> : <LoginBox />)}
+        />
 
         <Route
           path="/repairs"

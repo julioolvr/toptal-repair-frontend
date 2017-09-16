@@ -1,11 +1,16 @@
-import { ajax } from 'rxjs/observable/dom/ajax';
+import { Observable } from 'rxjs';
 
 export default {
   login(email, password) {
-    return ajax.post(
-      '/users/sign_in',
-      { user: { email, password } },
-      { 'Content-Type': 'application/json' },
+    return Observable.from(
+      fetch('/users/sign_in', {
+        method: 'POST',
+        body: JSON.stringify({ user: { email, password } }),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      }),
     );
   },
 };

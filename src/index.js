@@ -4,6 +4,7 @@ import React from 'react';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
+import { Observable } from 'rxjs';
 import { createEpicMiddleware } from 'redux-observable';
 
 import './index.css';
@@ -11,12 +12,7 @@ import reducers from './reducer';
 import epics from './epic';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
-
-const fakeRepairs = {
-  1: { id: 1, title: 'First repair' },
-  2: { id: 2, title: 'Second repair' },
-  3: { id: 3, title: 'Third repair' },
-};
+import { loadState, saveState } from './lib/localStorageState';
 
 const epicMiddleware = createEpicMiddleware(epics);
 
@@ -26,9 +22,17 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
   reducers,
-  { repairs: fakeRepairs },
+  loadState(),
   composeEnhancers(applyMiddleware(epicMiddleware)),
 );
+
+Observable.create((obs) => {
+  store.subscribe(() => {
+    obs.next(store.getState());
+  });
+})
+  .debounceTime(1000)
+  .subscribe(saveState);
 
 ReactDOM.render(
   <Provider store={store}>

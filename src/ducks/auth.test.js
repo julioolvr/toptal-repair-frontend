@@ -56,12 +56,14 @@ describe('ducks/auth', () => {
     });
 
     it('emits a LOGIN_SUCCESS action if the API call succeeds', (done) => {
-      const action$ = ActionsObservable.from([
-        login('test@test.com', '123456'),
-      ]);
+      const action$ = ActionsObservable.from([login('test@test.com', '123456')]);
       const user = {};
 
-      api.login.mockImplementation(() => ActionsObservable.of(user));
+      api.login.mockImplementation(() =>
+        ActionsObservable.of({
+          json: () => Promise.resolve(user),
+        }),
+      );
 
       epic(action$)
         .ofType('LOGIN_SUCCESS')
@@ -72,9 +74,7 @@ describe('ducks/auth', () => {
     });
 
     it('emits a LOGIN_FAILED action if the API call fails', (done) => {
-      const action$ = ActionsObservable.from([
-        login('test@test.com', '123456'),
-      ]);
+      const action$ = ActionsObservable.from([login('test@test.com', '123456')]);
       const error = new Error();
 
       api.login.mockImplementation(() => ActionsObservable.throw(error));
@@ -118,10 +118,7 @@ describe('ducks/auth', () => {
       });
 
       it('sets isAuthenticated to false', () => {
-        const state = reducer(
-          { isAuthenticated: true },
-          { type: 'LOGIN_START' },
-        );
+        const state = reducer({ isAuthenticated: true }, { type: 'LOGIN_START' });
         expect(state.isAuthenticated).toBe(false);
       });
 
@@ -134,18 +131,12 @@ describe('ducks/auth', () => {
     describe('on LOGIN_SUCCESS', () => {
       it("sets the user to the one in the action's payload", () => {
         const user = {};
-        const state = reducer(
-          { user: null },
-          { type: 'LOGIN_SUCCESS', payload: user },
-        );
+        const state = reducer({ user: null }, { type: 'LOGIN_SUCCESS', payload: user });
         expect(state.user).toBe(user);
       });
 
       it('sets the error to null', () => {
-        const state = reducer(
-          { error: new Error() },
-          { type: 'LOGIN_SUCCESS' },
-        );
+        const state = reducer({ error: new Error() }, { type: 'LOGIN_SUCCESS' });
         expect(state.error).toBe(null);
       });
 
@@ -155,10 +146,7 @@ describe('ducks/auth', () => {
       });
 
       it('sets isAuthenticated to true', () => {
-        const state = reducer(
-          { isAuthenticated: false },
-          { type: 'LOGIN_SUCCESS' },
-        );
+        const state = reducer({ isAuthenticated: false }, { type: 'LOGIN_SUCCESS' });
         expect(state.isAuthenticated).toBe(true);
       });
     });
@@ -171,10 +159,7 @@ describe('ducks/auth', () => {
 
       it('sets the error to the one given in the payload', () => {
         const error = new Error();
-        const state = reducer(
-          { error: null },
-          { type: 'LOGIN_FAILED', payload: error },
-        );
+        const state = reducer({ error: null }, { type: 'LOGIN_FAILED', payload: error });
         expect(state.error).toBe(error);
       });
 
@@ -184,10 +169,7 @@ describe('ducks/auth', () => {
       });
 
       it('sets isAuthenticated to false', () => {
-        const state = reducer(
-          { isAuthenticated: true },
-          { type: 'LOGIN_FAILED' },
-        );
+        const state = reducer({ isAuthenticated: true }, { type: 'LOGIN_FAILED' });
         expect(state.isAuthenticated).toBe(false);
       });
     });
