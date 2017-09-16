@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import g from 'glamorous';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 import userPropType from '../../proptypes/user';
 import repairPropType from '../../proptypes/repair';
@@ -12,11 +13,16 @@ function canAddRepairs(user) {
   return user.manager;
 }
 
-function RepairsList({ repairs = [], user }) {
+function RepairsList({ repairs = [], user, history }) {
   let content;
 
   if (repairs.length === 0) {
-    content = <EmptyRepairsList canAddRepairs={canAddRepairs(user)} />;
+    content = (
+      <EmptyRepairsList
+        onAddRepair={() => history.push('/repairs/add')}
+        canAddRepairs={canAddRepairs(user)}
+      />
+    );
   } else {
     content = repairs.map(repair => <RepairRow key={repair.id} repair={repair} />);
   }
@@ -31,6 +37,9 @@ function RepairsList({ repairs = [], user }) {
 RepairsList.propTypes = {
   repairs: PropTypes.arrayOf(repairPropType),
   user: userPropType.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 RepairsList.defaultProps = {
@@ -45,4 +54,4 @@ function mapStateToProps(state) {
 }
 
 export { RepairsList };
-export default connect(mapStateToProps)(RepairsList);
+export default connect(mapStateToProps)(withRouter(RepairsList));

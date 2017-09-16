@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import g from 'glamorous';
 
-function EmptyRepairsList({ canAddRepairs }) {
+function EmptyRepairsList({ onAddRepair, canAddRepairs }) {
   return (
     <g.Div
       height="100%"
@@ -13,7 +13,7 @@ function EmptyRepairsList({ canAddRepairs }) {
       fontSize="1.8em"
     >
       {canAddRepairs ? (
-        <div>
+        <g.Div textAlign="center">
           <div>No repairs</div>
           <g.Button
             fontSize="1.2em"
@@ -23,10 +23,11 @@ function EmptyRepairsList({ canAddRepairs }) {
             border="none"
             cursor="pointer"
             color="#222"
+            onClick={onAddRepair}
           >
             +
           </g.Button>
-        </div>
+        </g.Div>
       ) : (
         <div>You have no repairs assigned</div>
       )}
@@ -36,6 +37,11 @@ function EmptyRepairsList({ canAddRepairs }) {
 
 EmptyRepairsList.propTypes = {
   canAddRepairs: PropTypes.bool.isRequired,
+  onAddRepair: PropTypes.func,
+};
+
+EmptyRepairsList.defaultProps = {
+  onAddRepair: () => {},
 };
 
 export default EmptyRepairsList;

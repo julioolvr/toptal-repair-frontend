@@ -9,7 +9,9 @@ exports[`renders a message prompting the manager to add a repair 1`] = `
   height="100%"
   justifyContent="center"
 >
-  <div>
+  <glamorous.Div
+    textAlign="center"
+  >
     <div>
       No repairs
     </div>
@@ -20,11 +22,12 @@ exports[`renders a message prompting the manager to add a repair 1`] = `
       cursor="pointer"
       fontSize="1.2em"
       marginTop=".5em"
+      onClick={[Function]}
       padding=".5em 1em"
     >
       +
     </glamorous.Button>
-  </div>
+  </glamorous.Div>
 </glamorous.Div>
 `;
 
