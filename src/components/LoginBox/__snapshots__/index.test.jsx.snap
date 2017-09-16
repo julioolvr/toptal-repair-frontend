@@ -8,12 +8,12 @@ exports[`renders an empty login box 1`] = `
     Login
   </div>
   <label
-    htmlFor="username"
+    htmlFor="email"
   >
-    Username:
+    Email:
   </label>
   <input
-    id="username"
+    id="email"
     onChange={[Function]}
     value=""
   />

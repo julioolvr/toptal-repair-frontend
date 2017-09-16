@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import LoginBox from '.';
+import { LoginBox } from '.';
 
 it('renders an empty login box', () => {
   const wrapper = shallow(<LoginBox onLogin={() => {}} />);

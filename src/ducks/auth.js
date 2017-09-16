@@ -1,13 +1,16 @@
+import { Observable } from 'rxjs';
+import api from '../lib/api';
+
 // Action types
 const LOGIN_START = 'LOGIN_START';
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 const LOGIN_FAILED = 'LOGIN_FAILED';
 
 // Action creators
-export function login(username, password) {
+export function login(email, password) {
   return {
     type: LOGIN_START,
-    payload: { username, password },
+    payload: { email, password },
   };
 }
 
@@ -23,6 +26,16 @@ export function loginFailed(error) {
     type: LOGIN_FAILED,
     payload: error,
   };
+}
+
+// Epic
+export function epic(action$) {
+  return action$.ofType(LOGIN_START).mergeMap(action =>
+    api
+      .login(action.payload.email, action.payload.password)
+      .map(loginSuccessful)
+      .catch(err => Observable.of(loginFailed(err))),
+  );
 }
 
 // Reducer

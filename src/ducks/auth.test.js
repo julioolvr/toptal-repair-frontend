@@ -1,15 +1,19 @@
-import reducer, { login, loginSuccessful, loginFailed } from './auth';
+import { ActionsObservable } from 'redux-observable';
+import reducer, { epic, login, loginSuccessful, loginFailed } from './auth';
+import api from '../lib/api';
+
+jest.mock('../lib/api', () => ({ login: jest.fn() }));
 
 describe('ducks/auth', () => {
   describe('action creators', () => {
     describe('login', () => {
-      it('generates a LOGIN_START action with the given username and password', () => {
-        const username = 'testuser';
+      it('generates a LOGIN_START action with the given email and password', () => {
+        const email = 'test@test.com';
         const password = 'testpassword';
-        const action = login(username, password);
+        const action = login(email, password);
 
         expect(action.type).toBe('LOGIN_START');
-        expect(action.payload.username).toBe(username);
+        expect(action.payload.email).toBe(email);
         expect(action.payload.password).toBe(password);
       });
     });
@@ -32,6 +36,55 @@ describe('ducks/auth', () => {
         expect(action.type).toBe('LOGIN_FAILED');
         expect(action.payload).toBe(error);
       });
+    });
+  });
+
+  describe('epic', () => {
+    it('logins through the api on LOGIN_START', (done) => {
+      const email = 'test@test.com';
+      const password = '123456';
+      const action$ = ActionsObservable.from([login(email, password)]);
+
+      api.login.mockImplementation(() => ActionsObservable.create());
+
+      epic(action$)
+        .first()
+        .subscribe(() => {
+          expect(api.login).toHaveBeenCalledWith(email, password);
+          done();
+        });
+    });
+
+    it('emits a LOGIN_SUCCESS action if the API call succeeds', (done) => {
+      const action$ = ActionsObservable.from([
+        login('test@test.com', '123456'),
+      ]);
+      const user = {};
+
+      api.login.mockImplementation(() => ActionsObservable.of(user));
+
+      epic(action$)
+        .ofType('LOGIN_SUCCESS')
+        .subscribe((action) => {
+          expect(action.payload).toBe(user);
+          done();
+        });
+    });
+
+    it('emits a LOGIN_FAILED action if the API call fails', (done) => {
+      const action$ = ActionsObservable.from([
+        login('test@test.com', '123456'),
+      ]);
+      const error = new Error();
+
+      api.login.mockImplementation(() => ActionsObservable.throw(error));
+
+      epic(action$)
+        .ofType('LOGIN_FAILED')
+        .subscribe((action) => {
+          expect(action.payload).toBe(error);
+          done();
+        });
     });
   });
 
@@ -65,7 +118,10 @@ describe('ducks/auth', () => {
       });
 
       it('sets isAuthenticated to false', () => {
-        const state = reducer({ isAuthenticated: true }, { type: 'LOGIN_START' });
+        const state = reducer(
+          { isAuthenticated: true },
+          { type: 'LOGIN_START' },
+        );
         expect(state.isAuthenticated).toBe(false);
       });
 
@@ -76,14 +132,20 @@ describe('ducks/auth', () => {
     });
 
     describe('on LOGIN_SUCCESS', () => {
-      it('sets the user to the one in the action\'s payload', () => {
+      it("sets the user to the one in the action's payload", () => {
         const user = {};
-        const state = reducer({ user: null }, { type: 'LOGIN_SUCCESS', payload: user });
+        const state = reducer(
+          { user: null },
+          { type: 'LOGIN_SUCCESS', payload: user },
+        );
         expect(state.user).toBe(user);
       });
 
       it('sets the error to null', () => {
-        const state = reducer({ error: new Error() }, { type: 'LOGIN_SUCCESS' });
+        const state = reducer(
+          { error: new Error() },
+          { type: 'LOGIN_SUCCESS' },
+        );
         expect(state.error).toBe(null);
       });
 
@@ -93,7 +155,10 @@ describe('ducks/auth', () => {
       });
 
       it('sets isAuthenticated to true', () => {
-        const state = reducer({ isAuthenticated: false }, { type: 'LOGIN_SUCCESS' });
+        const state = reducer(
+          { isAuthenticated: false },
+          { type: 'LOGIN_SUCCESS' },
+        );
         expect(state.isAuthenticated).toBe(true);
       });
     });
@@ -106,7 +171,10 @@ describe('ducks/auth', () => {
 
       it('sets the error to the one given in the payload', () => {
         const error = new Error();
-        const state = reducer({ error: null }, { type: 'LOGIN_FAILED', payload: error });
+        const state = reducer(
+          { error: null },
+          { type: 'LOGIN_FAILED', payload: error },
+        );
         expect(state.error).toBe(error);
       });
 
@@ -116,7 +184,10 @@ describe('ducks/auth', () => {
       });
 
       it('sets isAuthenticated to false', () => {
-        const state = reducer({ isAuthenticated: true }, { type: 'LOGIN_FAILED' });
+        const state = reducer(
+          { isAuthenticated: true },
+          { type: 'LOGIN_FAILED' },
+        );
         expect(state.isAuthenticated).toBe(false);
       });
     });

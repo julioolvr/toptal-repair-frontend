@@ -1,26 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
+import { login } from '../../ducks/auth';
 
 class LoginBox extends React.Component {
   state = {
-    username: '',
+    email: '',
     password: '',
   };
 
   login(e) {
     e.preventDefault();
-    this.props.onLogin(this.state.username, this.state.password);
+    this.props.onLogin(this.state.email, this.state.password);
   }
 
   render() {
     return (
       <form onSubmit={e => this.login(e)}>
         <div>Login</div>
-        <label htmlFor="username">Username:</label>
+        <label htmlFor="email">Email:</label>
         <input
-          id="username"
-          value={this.state.username}
-          onChange={e => this.setState({ username: e.target.value })}
+          id="email"
+          value={this.state.email}
+          onChange={e => this.setState({ email: e.target.value })}
         />
         <label htmlFor="password">Password:</label>
         <input
@@ -39,4 +42,9 @@ LoginBox.propTypes = {
   onLogin: PropTypes.func.isRequired,
 };
 
-export default LoginBox;
+const mapDispatchToProps = {
+  onLogin: login,
+};
+
+export { LoginBox };
+export default connect(null, mapDispatchToProps)(LoginBox);
