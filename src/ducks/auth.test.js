@@ -1,8 +1,16 @@
 import { ActionsObservable } from 'redux-observable';
-import reducer, { epic, login, loginSuccessful, loginFailed } from './auth';
+import reducer, {
+  epic,
+  login,
+  loginSuccessful,
+  loginFailed,
+  logout,
+  logoutSuccessful,
+  logoutFailed,
+} from './auth';
 import api from '../lib/api';
 
-jest.mock('../lib/api', () => ({ login: jest.fn() }));
+jest.mock('../lib/api', () => ({ login: jest.fn(), logout: jest.fn() }));
 
 describe('ducks/auth', () => {
   describe('action creators', () => {
@@ -37,54 +45,126 @@ describe('ducks/auth', () => {
         expect(action.payload).toBe(error);
       });
     });
+
+    describe('logout', () => {
+      it('generates a LOGOUT_START action', () => {
+        const action = logout();
+        expect(action.type).toBe('LOGOUT_START');
+      });
+    });
+
+    describe('logoutSuccessful', () => {
+      it('generates a LOGOUT_SUCCESS action', () => {
+        const action = logoutSuccessful();
+        expect(action.type).toBe('LOGOUT_SUCCESS');
+      });
+    });
+
+    describe('logoutFailed', () => {
+      it('generates a LOGOUT_FAILED action with the given error as the payload', () => {
+        const error = new Error();
+        const action = logoutFailed(error);
+
+        expect(action.type).toBe('LOGOUT_FAILED');
+        expect(action.payload).toBe(error);
+      });
+    });
   });
 
   describe('epic', () => {
-    it('logins through the api on LOGIN_START', (done) => {
-      const email = 'test@test.com';
-      const password = '123456';
-      const action$ = ActionsObservable.from([login(email, password)]);
+    describe('login', () => {
+      it('logins through the api on LOGIN_START', (done) => {
+        const email = 'test@test.com';
+        const password = '123456';
+        const action$ = ActionsObservable.from([login(email, password)]);
 
-      api.login.mockImplementation(() => ActionsObservable.create());
+        api.login.mockImplementation(() => ActionsObservable.create());
 
-      epic(action$)
-        .first()
-        .subscribe(() => {
-          expect(api.login).toHaveBeenCalledWith(email, password);
-          done();
-        });
+        epic(action$)
+          .first()
+          .subscribe(() => {
+            expect(api.login).toHaveBeenCalledWith(email, password);
+            done();
+          });
+      });
+
+      it('emits a LOGIN_SUCCESS action if the API call succeeds', (done) => {
+        const action$ = ActionsObservable.from([login('test@test.com', '123456')]);
+        const user = {};
+
+        api.login.mockImplementation(() =>
+          ActionsObservable.of({
+            json: () => Promise.resolve(user),
+          }),
+        );
+
+        epic(action$)
+          .filter(action => action.type === 'LOGIN_SUCCESS')
+          .subscribe((action) => {
+            expect(action.payload).toBe(user);
+            done();
+          });
+      });
+
+      it('emits a LOGIN_FAILED action if the API call fails', (done) => {
+        const action$ = ActionsObservable.from([login('test@test.com', '123456')]);
+        const error = new Error();
+
+        api.login.mockImplementation(() => ActionsObservable.throw(error));
+
+        epic(action$)
+          .filter(action => action.type === 'LOGIN_FAILED')
+          .subscribe((action) => {
+            expect(action.payload).toBe(error);
+            done();
+          });
+      });
     });
 
-    it('emits a LOGIN_SUCCESS action if the API call succeeds', (done) => {
-      const action$ = ActionsObservable.from([login('test@test.com', '123456')]);
-      const user = {};
+    describe('logout', () => {
+      it('logs out through the api on LOGOUT_START', (done) => {
+        const action$ = ActionsObservable.from([logout()]);
 
-      api.login.mockImplementation(() =>
-        ActionsObservable.of({
-          json: () => Promise.resolve(user),
-        }),
-      );
+        api.logout.mockImplementation(() => ActionsObservable.create());
 
-      epic(action$)
-        .ofType('LOGIN_SUCCESS')
-        .subscribe((action) => {
-          expect(action.payload).toBe(user);
-          done();
-        });
-    });
+        epic(action$)
+          .first()
+          .subscribe(() => {
+            expect(api.logout).toHaveBeenCalled();
+            done();
+          });
+      });
 
-    it('emits a LOGIN_FAILED action if the API call fails', (done) => {
-      const action$ = ActionsObservable.from([login('test@test.com', '123456')]);
-      const error = new Error();
+      it('emits a LOGOUT_SUCCESS action if the API call succeeds', (done) => {
+        const action$ = ActionsObservable.from([logout()]);
 
-      api.login.mockImplementation(() => ActionsObservable.throw(error));
+        api.logout.mockImplementation(() =>
+          ActionsObservable.of({
+            json: () => Promise.resolve(),
+          }),
+        );
 
-      epic(action$)
-        .ofType('LOGIN_FAILED')
-        .subscribe((action) => {
-          expect(action.payload).toBe(error);
-          done();
-        });
+        epic(action$)
+          .filter(action => action.type === 'LOGOUT_SUCCESS')
+          .subscribe((action) => {
+            expect(action).toBeDefined();
+            done();
+          });
+      });
+
+      it('emits a LOGOUT_FAILED action if the API call fails', (done) => {
+        const action$ = ActionsObservable.from([logout()]);
+        const error = new Error();
+
+        api.logout.mockImplementation(() => ActionsObservable.throw(error));
+
+        epic(action$)
+          .filter(action => action.type === 'LOGOUT_FAILED')
+          .subscribe((action) => {
+            expect(action.payload).toBe(error);
+            done();
+          });
+      });
     });
   });
 

@@ -1,10 +1,14 @@
 import { Observable } from 'rxjs';
+import { combineEpics } from 'redux-observable';
 import api from '../lib/api';
 
 // Action types
 const LOGIN_START = 'LOGIN_START';
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 const LOGIN_FAILED = 'LOGIN_FAILED';
+const LOGOUT_START = 'LOGOUT_START';
+const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+const LOGOUT_FAILED = 'LOGOUT_FAILED';
 
 // Action creators
 export function login(email, password) {
@@ -28,8 +32,23 @@ export function loginFailed(error) {
   };
 }
 
-// Epic
-export function epic(action$) {
+export function logout() {
+  return { type: LOGOUT_START };
+}
+
+export function logoutSuccessful() {
+  return { type: LOGOUT_SUCCESS };
+}
+
+export function logoutFailed(error) {
+  return {
+    type: LOGOUT_FAILED,
+    payload: error,
+  };
+}
+
+// Epics
+function loginEpic(action$) {
   return action$.ofType(LOGIN_START).mergeMap(action =>
     api
       .login(action.payload.email, action.payload.password)
@@ -38,6 +57,17 @@ export function epic(action$) {
       .catch(err => Observable.of(loginFailed(err))),
   );
 }
+
+function logoutEpic(action$) {
+  return action$.ofType(LOGOUT_START).mergeMap(() =>
+    api
+      .logout()
+      .map(logoutSuccessful)
+      .catch(err => Observable.of(logoutFailed(err))),
+  );
+}
+
+export const epic = combineEpics(loginEpic, logoutEpic);
 
 // Reducer
 const INITIAL_STATE = {
@@ -67,6 +97,8 @@ function reducer(state = INITIAL_STATE, action) {
         isAuthenticated: false,
         user: null,
       };
+    case LOGOUT_START:
+      return { ...state, isFetching: false, isAuthenticated: false, user: null, error: null };
     default:
       return state;
   }

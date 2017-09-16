@@ -4,5 +4,10 @@ exports[`renders a navbar 1`] = `
 <div>
   Oh hi 
   test@test.com
+  <button
+    onClick={[Function]}
+  >
+    Logout
+  </button>
 </div>
 `;

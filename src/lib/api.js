@@ -13,4 +13,15 @@ export default {
       }),
     );
   },
+  logout() {
+    return Observable.from(
+      fetch('/users/sign_out.json', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      }),
+    );
+  },
 };
