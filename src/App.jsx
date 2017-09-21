@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 
+import PrivateRoute from './components/auth/PrivateRoute';
 import Layout from './components/Layout';
 import LoginBox from './components/LoginBox';
 import RepairsList from './components/RepairsList';
 
-// TODO: Generic component for routes that require authentication
 function App({ isUserAuthenticated }) {
   return (
     <Router>
@@ -15,8 +15,7 @@ function App({ isUserAuthenticated }) {
         <Route
           exact
           path="/"
-          render={() =>
-            (isUserAuthenticated ? <Redirect to="/repairs" /> : <Redirect to="/login" />)}
+          render={() => <Redirect to={isUserAuthenticated ? '/repairs' : '/login'} />}
         />
 
         <Route
@@ -24,10 +23,7 @@ function App({ isUserAuthenticated }) {
           render={() => (isUserAuthenticated ? <Redirect to="/" /> : <LoginBox />)}
         />
 
-        <Route
-          path="/repairs"
-          render={() => (isUserAuthenticated ? <RepairsList /> : <Redirect to="/login" />)}
-        />
+        <PrivateRoute path="/repairs" component={RepairsList} />
       </Layout>
     </Router>
   );
