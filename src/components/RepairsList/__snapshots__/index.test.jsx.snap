@@ -1,26 +1,65 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders a list of repairs with content 1`] = `
+exports[`renders a list of repairs with content for a manager 1`] = `
 <glamorous.Div
   backgroundColor="rgba(255,255,255,.7)"
   height="100%"
 >
-  <RepairRow
-    repair={
-      Object {
-        "id": 1,
-        "title": "Test repair 1",
-      }
-    }
-  />
-  <RepairRow
-    repair={
-      Object {
-        "id": 1,
-        "title": "Test repair 1",
-      }
-    }
-  />
+  <div>
+    <div>
+      <button
+        onClick={[Function]}
+      >
+        Add repair
+      </button>
+    </div>
+    <div>
+      <RepairRow
+        repair={
+          Object {
+            "id": 1,
+            "title": "Test repair 1",
+          }
+        }
+      />
+      <RepairRow
+        repair={
+          Object {
+            "id": 1,
+            "title": "Test repair 1",
+          }
+        }
+      />
+    </div>
+  </div>
+</glamorous.Div>
+`;
+
+exports[`renders a list of repairs with content for a regular user 1`] = `
+<glamorous.Div
+  backgroundColor="rgba(255,255,255,.7)"
+  height="100%"
+>
+  <div>
+    <div>
+      <RepairRow
+        repair={
+          Object {
+            "id": 1,
+            "title": "Test repair 1",
+          }
+        }
+      />
+      <RepairRow
+        repair={
+          Object {
+            "id": 1,
+            "title": "Test repair 1",
+          }
+        }
+      />
+    </div>
+  </div>
 </glamorous.Div>
 `;
 

@@ -24,7 +24,17 @@ function RepairsList({ repairs = [], user, history }) {
       />
     );
   } else {
-    content = repairs.map(repair => <RepairRow key={repair.id} repair={repair} />);
+    const repairsList = repairs.map(repair => <RepairRow key={repair.id} repair={repair} />);
+    content = (
+      <div>
+        {canAddRepairs(user) && (
+          <div>
+            <button onClick={() => history.push('/repairs/add')}>Add repair</button>
+          </div>
+        )}
+        <div>{repairsList}</div>
+      </div>
+    );
   }
 
   return (

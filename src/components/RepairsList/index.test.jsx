@@ -23,9 +23,19 @@ it("prevents the user from adding repair if they're not a manager", () => {
   expect(wrapper.find('EmptyRepairsList').prop('canAddRepairs')).toBe(false);
 });
 
-it('renders a list of repairs with content', () => {
+it('renders a list of repairs with content for a manager', () => {
   const repairs = [{ id: 1, title: 'Test repair 1' }, { id: 1, title: 'Test repair 1' }];
-  const wrapper = shallow(<RepairsList {...defaultProps} repairs={repairs} />);
+  const wrapper = shallow(
+    <RepairsList {...defaultProps} repairs={repairs} user={{ manager: true }} />,
+  );
+  expect(wrapper).toMatchSnapshot();
+});
+
+it('renders a list of repairs with content for a regular user', () => {
+  const repairs = [{ id: 1, title: 'Test repair 1' }, { id: 1, title: 'Test repair 1' }];
+  const wrapper = shallow(
+    <RepairsList {...defaultProps} repairs={repairs} user={{ manager: false }} />,
+  );
   expect(wrapper).toMatchSnapshot();
 });
 
