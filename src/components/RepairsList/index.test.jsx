@@ -1,10 +1,11 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 
 import { RepairsList } from '.';
 
 const defaultProps = {
   user: { manager: true },
+  loadRepairs: jest.fn(),
   history: { push: jest.fn() },
 };
 
@@ -44,4 +45,14 @@ it('redirects to /repairs/add when adding a repair', () => {
   const wrapper = shallow(<RepairsList {...defaultProps} user={{ manager: true }} />);
   wrapper.find('EmptyRepairsList').prop('onAddRepair')();
   expect(historyPush).toHaveBeenCalledWith('/repairs/add');
+});
+
+describe('lifecycle callbacks', () => {
+  describe('componentDidMount', () => {
+    it('calls the loadRepairs prop', () => {
+      const loadRepairs = defaultProps.loadRepairs;
+      mount(<RepairsList {...defaultProps} />);
+      expect(loadRepairs).toHaveBeenCalled();
+    });
+  });
 });

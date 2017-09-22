@@ -40,4 +40,15 @@ export default {
       }).then(response => response.json()),
     );
   },
+  loadRepairs() {
+    return Observable.from(
+      fetch('/repairs', {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authorization: localStorage.getItem('access_token_header'),
+        },
+      }).then(response => response.json()),
+    );
+  },
 };
