@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { SingleDatePicker } from 'react-dates';
 import moment from 'moment';
 
+import { addRepairRequest } from '../../ducks/repairRequest';
 import HourPicker from '../HourPicker';
 
 const OPENING_HOUR = 8;
@@ -82,10 +83,7 @@ AddRepair.propTypes = {
 };
 
 const mapDispatchToProps = {
-  onAdd: payload => ({
-    type: 'PLACEHOLDER',
-    payload,
-  }),
+  onAdd: addRepairRequest,
 };
 
 export { AddRepair };

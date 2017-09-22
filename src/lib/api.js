@@ -10,6 +10,9 @@ export default {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
+      }).then((response) => {
+        localStorage.setItem('access_token_header', response.headers.get('Authorization'));
+        return response.json();
       }),
     );
   },
@@ -21,7 +24,20 @@ export default {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
-      }),
+      }).then(() => localStorage.removeItem('access_token_header')),
+    );
+  },
+  addRepair(repair) {
+    return Observable.from(
+      fetch('/repairs', {
+        method: 'POST',
+        body: JSON.stringify({ repair }),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authorization: localStorage.getItem('access_token_header'),
+        },
+      }).then(response => response.json()),
     );
   },
 };

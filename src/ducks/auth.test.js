@@ -92,11 +92,7 @@ describe('ducks/auth', () => {
         const action$ = ActionsObservable.from([login('test@test.com', '123456')]);
         const user = {};
 
-        api.login.mockImplementation(() =>
-          ActionsObservable.of({
-            json: () => Promise.resolve(user),
-          }),
-        );
+        api.login.mockImplementation(() => ActionsObservable.of(user));
 
         epic(action$)
           .filter(action => action.type === 'LOGIN_SUCCESS')
