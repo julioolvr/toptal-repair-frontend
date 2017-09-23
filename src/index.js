@@ -22,7 +22,6 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(reducers, loadState(), composeEnhancers(applyMiddleware(epicMiddleware)));
 
-// TODO: Clear state on logout
 Observable.create((obs) => {
   store.subscribe(() => {
     obs.next(store.getState());
