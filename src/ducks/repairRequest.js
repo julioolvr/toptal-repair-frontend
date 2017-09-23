@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { combineEpics } from 'redux-observable';
 import api from '../lib/api';
 
-import { addRepair } from './repairs';
+import { addRepair, removeRepair } from './repairs';
 
 // Action types
 const ADD_REPAIR_START = 'ADD_REPAIR_START';
@@ -11,6 +11,9 @@ const ADD_REPAIR_ERROR = 'ADD_REPAIR_ERROR';
 const LOAD_REPAIRS_START = 'LOAD_REPAIRS_START';
 const LOAD_REPAIRS_SUCCESS = 'LOAD_REPAIRS_SUCCESS';
 const LOAD_REPAIRS_ERROR = 'LOAD_REPAIRS_ERROR';
+const DELETE_REPAIR_START = 'DELETE_REPAIR_START';
+const DELETE_REPAIR_SUCCESS = 'DELETE_REPAIR_SUCCESS';
+const DELETE_REPAIR_ERROR = 'DELETE_REPAIR_ERROR';
 
 // Action creators
 export function addRepairRequest(repair) {
@@ -46,6 +49,18 @@ export function loadRepairsFailed(error) {
   return { type: LOAD_REPAIRS_ERROR, payload: error };
 }
 
+export function deleteRepairRequest(id) {
+  return { type: DELETE_REPAIR_START, payload: id };
+}
+
+export function deleteRepairSuccess() {
+  return { type: DELETE_REPAIR_SUCCESS };
+}
+
+export function deleteRepairError(error) {
+  return { type: DELETE_REPAIR_ERROR, payload: error };
+}
+
 // Epic
 function createEpic(action$) {
   return action$.ofType(ADD_REPAIR_START).mergeMap(action =>
@@ -65,7 +80,16 @@ function loadEpic(action$) {
   );
 }
 
-export const epic = combineEpics(createEpic, loadEpic);
+function deleteEpic(action$) {
+  return action$.ofType(DELETE_REPAIR_START).mergeMap(action =>
+    api
+      .deleteRepair(action.payload)
+      .mergeMap(() => [deleteRepairSuccess(), removeRepair(action.payload)])
+      .catch(err => Observable.of(deleteRepairError(err))),
+  );
+}
+
+export const epic = combineEpics(createEpic, loadEpic, deleteEpic);
 
 // Reducer
 const INITIAL_STATE = {
@@ -86,6 +110,12 @@ function reducer(state = INITIAL_STATE, action) {
     case LOAD_REPAIRS_SUCCESS:
       return { ...state, isFetching: false, error: null };
     case LOAD_REPAIRS_ERROR:
+      return { ...state, isFetching: false, error: action.payload };
+    case DELETE_REPAIR_START:
+      return { ...state, isFetching: true, error: null, id: action.payload };
+    case DELETE_REPAIR_SUCCESS:
+      return { ...state, isFetching: false, error: null, id: null };
+    case DELETE_REPAIR_ERROR:
       return { ...state, isFetching: false, error: action.payload };
     default:
       return state;

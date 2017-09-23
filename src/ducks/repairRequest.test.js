@@ -8,10 +8,13 @@ import reducer, {
   loadRepairsRequest,
   loadedRepairsSuccessfully,
   loadRepairsFailed,
+  deleteRepairRequest,
+  deleteRepairSuccess,
+  deleteRepairError,
 } from './repairRequest';
 import api from '../lib/api';
 
-jest.mock('../lib/api', () => ({ addRepair: jest.fn(), loadRepairs: jest.fn() }));
+jest.mock('../lib/api', () => ({ addRepair: jest.fn(), loadRepairs: jest.fn(), deleteRepair: jest.fn() }));
 
 describe('ducks/repairRequest', () => {
   describe('action creators', () => {
@@ -69,6 +72,33 @@ describe('ducks/repairRequest', () => {
         const action = loadRepairsFailed(error);
 
         expect(action.type).toBe('LOAD_REPAIRS_ERROR');
+        expect(action.payload).toBe(error);
+      });
+    });
+
+    describe('deleteRepairRequest', () => {
+      it('generates an action with type DELETE_REPAIR_START and the given repair id as the payload', () => {
+        const id = 42;
+        const action = deleteRepairRequest(id);
+
+        expect(action.type).toBe('DELETE_REPAIR_START');
+        expect(action.payload).toBe(id);
+      });
+    });
+
+    describe('deleteRepairSuccess', () => {
+      it('generates an action with type DELETE_REPAIR_SUCCESS', () => {
+        const action = deleteRepairSuccess();
+        expect(action.type).toBe('DELETE_REPAIR_SUCCESS');
+      });
+    });
+
+    describe('deleteRepairError', () => {
+      it('generates an action with type DELETE_REPAIR_ERROR and the given error as the payload', () => {
+        const error = new Error();
+        const action = deleteRepairError(error);
+
+        expect(action.type).toBe('DELETE_REPAIR_ERROR');
         expect(action.payload).toBe(error);
       });
     });
@@ -191,6 +221,63 @@ describe('ducks/repairRequest', () => {
           });
       });
     });
+
+    describe('delete', () => {
+      it('deletes the repair through the api on DELETE_REPAIR_START', (done) => {
+        const id = 42;
+        const action$ = ActionsObservable.from([deleteRepairRequest(id)]);
+
+        api.deleteRepair.mockImplementation(() => ActionsObservable.create());
+
+        epic(action$)
+          .first()
+          .subscribe(() => {
+            expect(api.deleteRepair).toHaveBeenCalledWith(id);
+            done();
+          });
+      });
+
+      it('emits a DELETE_REPAIR_SUCCESS action if the API call succeeds', (done) => {
+        const action$ = ActionsObservable.from([deleteRepairRequest(42)]);
+
+        api.deleteRepair.mockImplementation(() => ActionsObservable.of({}));
+
+        epic(action$)
+          .filter(action => action.type === 'DELETE_REPAIR_SUCCESS')
+          .subscribe((action) => {
+            expect(action).toBeDefined();
+            done();
+          });
+      });
+
+      it('emits a REMOVE_REPAIR action if the API call succeeds', (done) => {
+        const id = 42;
+        const action$ = ActionsObservable.from([deleteRepairRequest(id)]);
+
+        api.addRepair.mockImplementation(() => ActionsObservable.of({}));
+
+        epic(action$)
+          .filter(action => action.type === 'REMOVE_REPAIR')
+          .subscribe((action) => {
+            expect(action.payload).toBe(id);
+            done();
+          });
+      });
+
+      it('emits a DELETE_REPAIR_ERROR action if the API call fails', (done) => {
+        const action$ = ActionsObservable.from([deleteRepairRequest(42)]);
+        const error = new Error();
+
+        api.deleteRepair.mockImplementation(() => ActionsObservable.throw(error));
+
+        epic(action$)
+          .filter(action => action.type === 'DELETE_REPAIR_ERROR')
+          .subscribe((action) => {
+            expect(action.payload).toBe(error);
+            done();
+          });
+      });
+    });
   });
 
   describe('reducer', () => {
@@ -239,6 +326,54 @@ describe('ducks/repairRequest', () => {
 
       it('sets isFetching to false', () => {
         const state = reducer({ isFetching: true }, { type: 'ADD_REPAIR_ERROR' });
+        expect(state.isFetching).toBe(false);
+      });
+    });
+
+    describe('on DELETE_REPAIR_START', () => {
+      it('sets the error to null', () => {
+        const state = reducer({ error: new Error() }, { type: 'DELETE_REPAIR_START' });
+        expect(state.error).toBe(null);
+      });
+
+      it('sets isFetching to true', () => {
+        const state = reducer({ isFetching: false }, { type: 'DELETE_REPAIR_START' });
+        expect(state.isFetching).toBe(true);
+      });
+
+      it('sets id to the action\'s payload', () => {
+        const id = 42;
+        const state = reducer({ id: null }, { type: 'DELETE_REPAIR_START', payload: id });
+        expect(state.id).toBe(id);
+      });
+    });
+
+    describe('on DELETE_REPAIR_SUCCESS', () => {
+      it('sets the error to null', () => {
+        const state = reducer({ error: new Error() }, { type: 'DELETE_REPAIR_SUCCESS' });
+        expect(state.error).toBe(null);
+      });
+
+      it('sets isFetching to false', () => {
+        const state = reducer({ isFetching: true }, { type: 'DELETE_REPAIR_SUCCESS' });
+        expect(state.isFetching).toBe(false);
+      });
+
+      it('sets id to null', () => {
+        const state = reducer({ id: 42 }, { type: 'DELETE_REPAIR_SUCCESS' });
+        expect(state.id).toBe(null);
+      });
+    });
+
+    describe('on DELETE_REPAIR_ERROR', () => {
+      it('sets the error to the one given in the payload', () => {
+        const error = new Error();
+        const state = reducer({ error: null }, { type: 'DELETE_REPAIR_ERROR', payload: error });
+        expect(state.error).toBe(error);
+      });
+
+      it('sets isFetching to false', () => {
+        const state = reducer({ isFetching: true }, { type: 'DELETE_REPAIR_ERROR' });
         expect(state.isFetching).toBe(false);
       });
     });

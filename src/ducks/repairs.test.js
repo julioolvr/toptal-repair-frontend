@@ -1,4 +1,4 @@
-import reducer, { addRepair } from './repairs';
+import reducer, { addRepair, removeRepair } from './repairs';
 
 describe('ducks/repairs', () => {
   describe('action creators', () => {
@@ -9,6 +9,16 @@ describe('ducks/repairs', () => {
 
         expect(action.type).toBe('ADD_REPAIR');
         expect(action.payload).toBe(repair);
+      });
+    });
+
+    describe('removeRepair', () => {
+      it('generates a REMOVE_REPAIR action with the given id as the payload', () => {
+        const id = 42;
+        const action = removeRepair(id);
+
+        expect(action.type).toBe('REMOVE_REPAIR');
+        expect(action.payload).toBe(id);
       });
     });
   });
@@ -26,6 +36,17 @@ describe('ducks/repairs', () => {
         const repair = { id: 42 };
         const state = reducer({}, { type: 'ADD_REPAIR', payload: repair });
         expect(state[repair.id]).toBe(repair);
+      });
+    });
+
+    describe('on REMOVE_REPAIR', () => {
+      it('removes the repair with the given id', () => {
+        const repair = { id: 42 };
+        const state = reducer(
+          { [repair.id]: repair },
+          { type: 'REMOVE_REPAIR', payload: repair.id },
+        );
+        expect(state).not.toHaveProperty(repair.id.toString());
       });
     });
   });

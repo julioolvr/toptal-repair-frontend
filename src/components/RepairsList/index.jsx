@@ -8,7 +8,7 @@ import userPropType from '../../proptypes/user';
 import repairPropType from '../../proptypes/repair';
 import RepairRow from './RepairRow';
 import EmptyRepairsList from './EmptyRepairsList';
-import { loadRepairsRequest } from '../../ducks/repairRequest';
+import { loadRepairsRequest, deleteRepairRequest } from '../../ducks/repairRequest';
 
 function canAddRepairs(user) {
   return user.manager;
@@ -88,7 +88,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   loadRepairs: loadRepairsRequest,
-  deleteRepair: repairId => ({ type: 'DELETE_REPAIR_PLACEHOLDER', payload: repairId }),
+  deleteRepair: deleteRepairRequest,
 };
 
 export { RepairsList };

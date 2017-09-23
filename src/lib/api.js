@@ -51,4 +51,16 @@ export default {
       }).then(response => response.json()),
     );
   },
+  deleteRepair(id) {
+    return Observable.from(
+      fetch(`/repairs/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authorization: localStorage.getItem('access_token_header'),
+        },
+      }),
+    );
+  },
 };
