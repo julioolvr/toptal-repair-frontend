@@ -8,3 +8,17 @@ exports[`renders a row for a repair 1`] = `
   Test repair
 </glamorous.Div>
 `;
+
+exports[`renders a row for a repair that can be deleted 1`] = `
+<glamorous.Div
+  borderBottom="1px solid rgba(0, 0, 0, .1)"
+  padding=".8em"
+>
+  Test repair
+  <button
+    onClick={[Function]}
+  >
+    X
+  </button>
+</glamorous.Div>
+`;

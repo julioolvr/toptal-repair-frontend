@@ -15,6 +15,8 @@ exports[`renders a list of repairs with content for a manager 1`] = `
     </div>
     <div>
       <RepairRow
+        canDeleteRepair={true}
+        onDeleteRepair={[Function]}
         repair={
           Object {
             "id": 1,
@@ -23,10 +25,12 @@ exports[`renders a list of repairs with content for a manager 1`] = `
         }
       />
       <RepairRow
+        canDeleteRepair={true}
+        onDeleteRepair={[Function]}
         repair={
           Object {
-            "id": 1,
-            "title": "Test repair 1",
+            "id": 2,
+            "title": "Test repair 2",
           }
         }
       />
@@ -43,6 +47,8 @@ exports[`renders a list of repairs with content for a regular user 1`] = `
   <div>
     <div>
       <RepairRow
+        canDeleteRepair={false}
+        onDeleteRepair={[Function]}
         repair={
           Object {
             "id": 1,
@@ -51,10 +57,12 @@ exports[`renders a list of repairs with content for a regular user 1`] = `
         }
       />
       <RepairRow
+        canDeleteRepair={false}
+        onDeleteRepair={[Function]}
         repair={
           Object {
-            "id": 1,
-            "title": "Test repair 1",
+            "id": 2,
+            "title": "Test repair 2",
           }
         }
       />

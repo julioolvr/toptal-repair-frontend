@@ -25,15 +25,31 @@ it("prevents the user from adding repair if they're not a manager", () => {
 });
 
 it('renders a list of repairs with content for a manager', () => {
-  const repairs = [{ id: 1, title: 'Test repair 1' }, { id: 1, title: 'Test repair 1' }];
+  const repairs = [{ id: 1, title: 'Test repair 1' }, { id: 2, title: 'Test repair 2' }];
   const wrapper = shallow(
     <RepairsList {...defaultProps} repairs={repairs} user={{ manager: true }} />,
   );
   expect(wrapper).toMatchSnapshot();
 });
 
+it('allows the manager to delete a repair from the list', () => {
+  const repairs = [{ id: 1, title: 'Test repair 1' }];
+  const wrapper = shallow(
+    <RepairsList {...defaultProps} repairs={repairs} user={{ manager: true }} />,
+  );
+  expect(wrapper.find('RepairRow').prop('canDeleteRepair')).toBe(true);
+});
+
+it("doesn't allow a regular user to delete a repair from the list", () => {
+  const repairs = [{ id: 1, title: 'Test repair 1' }];
+  const wrapper = shallow(
+    <RepairsList {...defaultProps} repairs={repairs} user={{ manager: false }} />,
+  );
+  expect(wrapper.find('RepairRow').prop('canDeleteRepair')).toBe(false);
+});
+
 it('renders a list of repairs with content for a regular user', () => {
-  const repairs = [{ id: 1, title: 'Test repair 1' }, { id: 1, title: 'Test repair 1' }];
+  const repairs = [{ id: 1, title: 'Test repair 1' }, { id: 2, title: 'Test repair 2' }];
   const wrapper = shallow(
     <RepairsList {...defaultProps} repairs={repairs} user={{ manager: false }} />,
   );

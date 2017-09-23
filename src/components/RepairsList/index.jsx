@@ -14,6 +14,10 @@ function canAddRepairs(user) {
   return user.manager;
 }
 
+function canDeleteRepairs(user) {
+  return user.manager;
+}
+
 class RepairsList extends React.Component {
   componentDidMount() {
     this.props.loadRepairs();
@@ -31,7 +35,15 @@ class RepairsList extends React.Component {
         />
       );
     } else {
-      const repairsList = repairs.map(repair => <RepairRow key={repair.id} repair={repair} />);
+      const repairsList = repairs.map(repair => (
+        <RepairRow
+          key={repair.id}
+          repair={repair}
+          canDeleteRepair={canDeleteRepairs(user)}
+          onDeleteRepair={this.props.deleteRepair}
+        />
+      ));
+
       content = (
         <div>
           {canAddRepairs(user) && (
@@ -56,6 +68,7 @@ RepairsList.propTypes = {
   repairs: PropTypes.arrayOf(repairPropType),
   user: userPropType.isRequired,
   loadRepairs: PropTypes.func.isRequired,
+  deleteRepair: PropTypes.func,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
@@ -63,6 +76,7 @@ RepairsList.propTypes = {
 
 RepairsList.defaultProps = {
   repairs: [],
+  deleteRepair: () => {},
 };
 
 function mapStateToProps(state) {
@@ -74,6 +88,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   loadRepairs: loadRepairsRequest,
+  deleteRepair: repairId => ({ type: 'DELETE_REPAIR_PLACEHOLDER', payload: repairId }),
 };
 
 export { RepairsList };
