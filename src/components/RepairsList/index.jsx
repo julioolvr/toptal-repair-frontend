@@ -18,6 +18,10 @@ function canDeleteRepairs(user) {
   return user.manager;
 }
 
+function canEditRepairs(user) {
+  return user.manager;
+}
+
 class RepairsList extends React.Component {
   componentDidMount() {
     this.props.loadRepairs();
@@ -41,6 +45,8 @@ class RepairsList extends React.Component {
           repair={repair}
           canDeleteRepair={canDeleteRepairs(user)}
           onDeleteRepair={this.props.deleteRepair}
+          canEditRepair={canEditRepairs(user)}
+          onEditRepair={id => history.push(`/repairs/${id}/edit`)}
         />
       ));
 

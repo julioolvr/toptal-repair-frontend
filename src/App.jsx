@@ -8,6 +8,7 @@ import PrivateRoute from './components/auth/PrivateRoute';
 import Layout from './components/Layout';
 import LoginBox from './components/LoginBox';
 import AddRepair from './components/AddRepair';
+import EditRepair from './components/EditRepair';
 import RepairsList from './components/RepairsList';
 
 function App({ isUserAuthenticated }) {
@@ -19,13 +20,12 @@ function App({ isUserAuthenticated }) {
           path="/"
           render={() => <Redirect to={isUserAuthenticated ? '/repairs' : '/login'} />}
         />
-
         <Route
           path="/login"
           render={() => (isUserAuthenticated ? <Redirect to="/" /> : <LoginBox />)}
         />
-
         <PrivateRoute exact path="/repairs" component={RepairsList} />
+        <PrivateRoute exact path="/repairs/:id/edit" component={EditRepair} />
         <PrivateRoute
           exact
           path="/repairs/add"
